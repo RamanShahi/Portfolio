@@ -478,12 +478,10 @@ const scriptURL =
 
 if (contactForm) {
 
-    contactForm.addEventListener("submit", async function (e) {
+    contactForm.addEventListener("submit", function (e) {
 
         e.preventDefault();
 
-
-        // Get form fields
         const name =
             document.getElementById("name").value.trim();
 
@@ -500,7 +498,6 @@ if (contactForm) {
             document.getElementById("formStatus");
 
 
-        // Basic validation
         if (!name || !email || !subject || !message) {
 
             formStatus.textContent =
@@ -510,7 +507,6 @@ if (contactForm) {
         }
 
 
-        // Prepare form data
         const formData = new URLSearchParams();
 
         formData.append("name", name);
@@ -519,44 +515,35 @@ if (contactForm) {
         formData.append("message", message);
 
 
-        try {
-
-            formStatus.textContent =
-                "Sending message...";
+        formStatus.textContent =
+            "Sending message...";
 
 
-            await fetch(scriptURL, {
+        fetch(scriptURL, {
 
-                method: "POST",
+            method: "POST",
 
-                body: formData,
+            body: formData,
 
-                mode: "no-cors"
+            mode: "no-cors"
 
-            });
+        })
+        .then(function () {
 
-
-            // Show success message
             formStatus.textContent =
                 "Message sent successfully!";
 
-
-            // Clear form
             contactForm.reset();
 
+        })
+        .catch(function (error) {
 
-        } catch (error) {
-
-            console.error(
-                "Contact form error:",
-                error
-            );
-
+            console.error("Error:", error);
 
             formStatus.textContent =
                 "Something went wrong. Please try again.";
 
-        }
+        });
 
     });
 
